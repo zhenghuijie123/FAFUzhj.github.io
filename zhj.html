@@ -1,0 +1,210 @@
+
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="initial-scale=1,maximum-scale=1,user-scalable=no"
+    />
+    <title>
+      Intro to MapView - Create a 2D map | Sample | ArcGIS Maps SDK for
+      JavaScript 4.26
+    </title>
+    <style type="text/css">
+       html,
+       body,
+      #top{
+             width: 100%;
+             height: 40px;
+        padding: 0;
+         margin: 0;
+        background :yellow ;
+        font-size:25px;
+        font-style:oblique;
+        font-family:"楷体";
+        text-align: center;
+         }
+       #viewDiv {
+         padding: 0;
+         margin: 0;
+         width: 100%;
+         height: 600px;
+
+       }
+       #warp{
+         width: 100%;
+             height: 60px;
+        padding: 0;
+         margin: 0;
+
+       }
+       #tableDiv{
+         width: 100%;
+             height: 600px;
+        padding: 0;
+         margin: 0;
+       background :orange ;
+        font-size:25px;
+        font-style:oblique;
+        font-family:"楷体";
+        text-align: center;
+       }
+    </style>
+
+    <link
+      rel="stylesheet"
+      href="https://js.arcgis.com/4.26/esri/themes/light/main.css"
+    />
+    <script src="https://js.arcgis.com/4.26/"></script>
+
+    <script>
+      require([
+        "esri/Map",
+        "esri/views/MapView",
+        "esri/layers/FeatureLayer",
+        "esri/widgets/Legend",
+        "esri/widgets/ScaleBar",
+        "esri/widgets/Search",
+        "esri/widgets/LayerList",
+        "esri/widgets/BasemapGallery",
+        "esri/widgets/DistanceMeasurement2D",
+        "esri/widgets/Compass",
+        "esri/widgets/CoordinateConversion",
+        "esri/widgets/Home",
+        "esri/widgets/Expand",
+        "esri/widgets/FeatureTable"
+      ], (
+        Map,
+        MapView,
+        FeatureLayer,
+        Legend,
+        ScaleBar,
+        Search,
+        LayerList,
+        BasemapGallery,
+        DistanceMeasurement2D,
+        Compass,
+        CoordinateConversion,
+        Home,
+        Expand,
+        FeatureTable
+      ) => {
+        var flayer = new FeatureLayer({
+          url:"https://www.geosceneonline.cn/server/rest/services/Hosted/中国地区历史地震/FeatureServer"
+          
+        });
+        const map = new Map({
+          basemap: "gray-vector",
+          layers: [flayer]
+        });
+
+        const view = new MapView({
+          container: "viewDiv",
+          map: map,
+          zoom: 3,
+          center: [109, 38] // longitude, latitude
+        });
+        var legend = new Legend({
+          view: view,
+          layer: flayer,
+          title: "rail"
+        });
+
+        view.ui.add(legend, "bottom-right");
+
+        let scaleBar = new ScaleBar({
+          view: view,
+          style: "ruler",
+          unit: "metric"
+        });
+
+        view.ui.add(scaleBar, {
+          position: "bottom-left"
+        });
+
+        const searchWidget = new Search({
+          view: view,
+         
+        });
+        // Adds the search widget below other elements in
+        // the top left corner of the view
+        view.ui.add(searchWidget, {
+          position: "top-right",
+          index: 2
+        });
+
+        let layerList = new LayerList({
+          view: view
+        });
+        // Adds widget below other elements in the top left corner of the view
+
+        let basemapGallery = new BasemapGallery({
+          view: view,
+          container: "basemapGalleryDiv"
+        });
+
+        // Add the widget to the top-right corner of the view
+        view.ui.add(basemapGallery, {
+          position: "warp"
+        });
+        
+        let homeWidget = new Home({
+            view: view
+          });
+          
+          // adds the home widget to the top left corner of the MapView
+          view.ui.add(homeWidget, "top-left");
+        
+        
+        let measurementWidget = new DistanceMeasurement2D({
+          view: view,
+          unit: "feet"
+        });
+
+        let compass = new Compass({
+          view: view
+        });
+
+        // adds the compass to the top left corner of the MapView
+        view.ui.add(compass, "top-right");
+        
+        
+        let ccWidget = new CoordinateConversion({
+            view: view,
+            
+          });
+         baseExpand = new Expand({
+         //expandIconClass: "esri-icon-layer-list",  
+         view: view,
+         content: layerList,
+              });
+        baseExpand1 = new Expand({
+          view:view,
+          content:measurementWidget
+        })
+         baseExpand2 = new Expand({
+          view:view,
+          content:ccWidget
+        })
+         view.ui.add([baseExpand, baseExpand1,baseExpand2], "top-right");
+        const featureTable = new FeatureTable({
+  view: view, // The view property must be set for the select/highlight to work
+  layer: flayer,
+  container: "tableDiv"
+});
+
+      });
+    </script>
+  </head>
+
+  <body>
+    <div id="top">全国历史地震地图</div>
+   
+   
+    <div id="viewDiv"></div>
+    <div id = "tableDiv"></div>
+    <div id="warp">
+      底图库
+      <div id="basemapGalleryDiv"></div>
+    </div>
+  </body>
+</html>
